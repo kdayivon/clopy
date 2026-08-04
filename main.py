@@ -1,83 +1,45 @@
-from tkinter import *
+from PySide6.QtWidgets import * 
+from PySide6.QtCore import Qt 
 
-class Pomodoro:
-    def __init__(self, window):
-        self.window = window
-        self.window.title("Pomodoro Timer")
-        self.window.geometry("300x180")
-        self.window.resizable(False, False)
+# fgc = #D4BE98
+# bgc = #32302F
+# bdgc = #252424
 
-        self.hour = StringVar(value="00")
-        self.minute = StringVar(value="50")
-        self.second = StringVar(value="00")
-        self.break_time = StringVar(value="10")
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
 
-        self.remaining = 0
-        self.is_break = False
+        container = QWidget()
+        self.setCentralWidget(container)
 
-        Label(window, text="Work Time").place(x=20, y=5)
+        layout = QVBoxLayout(container)
 
-        Entry(window, width=3, font=("Roboto", 18),
-              textvariable=self.hour).place(x=20, y=30)
-        Entry(window, width=3, font=("Roboto", 18),
-              textvariable=self.minute).place(x=75, y=30)
-        Entry(window, width=3, font=("Roboto", 18),
-              textvariable=self.second).place(x=130, y=30)
+        page_container = QWidget()
+        page_layout = QHBoxLayout(page_container)
 
-        Label(window, text="Break (minutes)").place(x=20, y=70)
-        Entry(window, width=5, font=("Roboto", 18),
-              textvariable=self.break_time).place(x=20, y=95)
+        pomo_btn = QPushButton("Pomodoro")
+        timer_btn = QPushButton("Timer")
+        watch_btn = QPushButton("Stopwatch")
+        
+        page_layout.addWidget(pomo_btn)
+        page_layout.addWidget(timer_btn)
+        page_layout.addWidget(watch_btn)
 
-        self.status = Label(window, text="Ready", font=("Roboto", 12))
-        self.status.place(x=150, y=95)
+        lbl = QLabel("T I M E")
+        lbl.setAlignment(Qt.AlignCenter)
 
-        Button(window, text="START", command=self.start).place(x=20, y=140)
-
-    def start(self):
-        """Starts the work timer."""
-        try:
-            self.remaining = (int(self.hour.get()) * 3600 + int(self.minute.get()) * 60 +
-                int(self.second.get()))
-            self.is_break = False
-            self.status.config(text="Work")
-            self.countdown()
-
-        except ValueError:
-            self.status.config(text="Invalid input")
-
-    def countdown(self):
-        """Updates the timer every second."""
-        if self.remaining >= 0:
-            mins, secs = divmod(self.remaining, 60)
-            hrs, mins = divmod(mins, 60)
-
-            self.hour.set(f"{hrs:02}")
-            self.minute.set(f"{mins:02}")
-            self.second.set(f"{secs:02}")
-
-            self.remaining -= 1
-            self.window.after(1000, self.countdown)
-
-        else:
-            if not self.is_break:
-                self.start_break()
-            else:
-                self.start()
-
-    def start_break(self):
-        """Starts the break timer."""
-        self.is_break = True
-        self.status.config(text="Break")
-
-        self.remaining = int(self.break_time.get()) * 60
-        self.countdown()
-
-
-def main():
-    window = Tk()
-    Pomodoro(window)
-    window.mainloop()
+        btn = QPushButton("START")
+        
+        layout.addWidget(page_container)
+        layout.addWidget(lbl)
+        layout.addWidget(btn)
 
 if __name__ == "__main__":
-    main()
+    app = QApplication([])
+    window = MainWindow()
+    window.setWindowTitle("Hello World")
+    window.resize(640, 360)
+    window.show()
+
+    app.exec()
 
