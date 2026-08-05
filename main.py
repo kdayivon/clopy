@@ -1,5 +1,11 @@
 from PySide6.QtWidgets import * 
-from PySide6.QtCore import Qt 
+from PySide6.QtCore import Qt, Signal 
+from helpers.topbar import TopBar 
+from helpers.timedisplay import TimeDisplay
+from helpers.startbutton import StartButton 
+from pages.pomopage import PomodoroPage 
+from pages.timerpage import TimerPage 
+from pages.watchpage import StopWatchPage
 
 # fgc = #D4BE98
 # bgc = #32302F
@@ -14,30 +20,28 @@ class MainWindow(QMainWindow):
 
         layout = QVBoxLayout(container)
 
-        page_container = QWidget()
-        page_layout = QHBoxLayout(page_container)
+        self.nav = TopBar()
+        self.stack = QStackedWidget()
+        layout.addWidget(self.nav)
+        layout.addWidget(self.stack)
 
-        pomo_btn = QPushButton("Pomodoro")
-        timer_btn = QPushButton("Timer")
-        watch_btn = QPushButton("Stopwatch")
+        self.pomo_page = PomodoroPage()
+        self.timer_page = TimerPage()
+        self.watch_page = StopWatchPage()
+
+        self.stack.addWidget(self.pomo_page)
+        self.stack.addWidget(self.timer_page)
+        self.stack.addWidget(self.watch_page)
+        layout.addWidget(self.stack)
         
-        page_layout.addWidget(pomo_btn)
-        page_layout.addWidget(timer_btn)
-        page_layout.addWidget(watch_btn)
+        self.stack.setCurrentIndex(0)
+        self.nav.page_i.connect(self.stack.setCurrentIndex)
 
-        lbl = QLabel("T I M E")
-        lbl.setAlignment(Qt.AlignCenter)
-
-        btn = QPushButton("START")
-        
-        layout.addWidget(page_container)
-        layout.addWidget(lbl)
-        layout.addWidget(btn)
 
 if __name__ == "__main__":
     app = QApplication([])
     window = MainWindow()
-    window.setWindowTitle("Hello World")
+    window.setWindowTitle("Clopy")
     window.resize(640, 360)
     window.show()
 
