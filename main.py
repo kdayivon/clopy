@@ -10,6 +10,7 @@ from pages.watchpage import StopWatchPage
 # fgc = #D4BE98
 # bgc = #32302F
 # bdgc = #252424
+# bg1 = #3C3836
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -17,6 +18,7 @@ class MainWindow(QMainWindow):
 
         container = QWidget()
         self.setCentralWidget(container)
+        container.setStyleSheet("background-color: #3C3836;")
 
         layout = QVBoxLayout(container)
 

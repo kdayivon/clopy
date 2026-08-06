@@ -1,14 +1,13 @@
 from PySide6.QtWidgets import * 
 from PySide6.QtCore import Qt, Signal 
+from PySide6.QtGui import QFont
 
 class StartButton(QWidget):
     def __init__(self):
         super().__init__()
 
-        btn_layout = QHBoxLayout(self)
-        btn_layout.setContentsMargins(0, 0, 0, 0)
-        btn_layout.setSpacing(0)
-
         self.btn = QPushButton("START")
-        btn_layout.addWidget(self.btn)
+        self.btn.resize(200, 55)
+        self.btn.setFont(QFont('Arial Rounded MT Bold', 30))
+
 
