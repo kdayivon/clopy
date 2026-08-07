@@ -59,7 +59,7 @@ class PomodoroPage(QWidget):
             self.update_display(self.pomo.remaining)
             return 
         self.pomo.set_time(total_seconds)
-        self.update_display(total_seconds)
+        self.update_display(self.pomo.remaining)
 
     def toggle_timer(self):
         if self.pomo.timer.isActive():
@@ -81,10 +81,12 @@ class PomodoroPage(QWidget):
     def timer_finished(self):
         if self.mode == "pomodoro":
             self.mode = "break"
-            self.pomo.set_time(10*60)
+            self.pomo.remaining = self.pomo.break_dur
         else:
             self.mode = "pomodoro"
-            self.pomo.set_time(50*60)
+            self.pomo.remaining = self.pomo.pomo_dur
 
+        self.pomo.time_changed.emit(self.pomo.remaining)
         self.update_display(self.pomo.remaining)
         self.btn.setText("START")
+

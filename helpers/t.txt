@@ -1,6 +1,0 @@
-pomodoro timer 
-
-timer -> 50 minutes -> press start -> start timer
-    if pause and timer.isActive() -> paused 
-        if start -> restart from paused time 
-        if skip -> end timer -> break -> break ends -> increment pomodoro counter by 1
