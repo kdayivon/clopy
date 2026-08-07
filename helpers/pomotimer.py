@@ -11,34 +11,35 @@ class PomoTimer(QObject):
         super().__init__()
 
         self.timer = QTimer(self)
-        self.timer.setInterval(1000)
         self.timer.timeout.connect(self.update)
+        self.remaining = 50*60
 
         self.end_time = None
         self.running = False
 
-    def start(self, seconds):
-        self.end_time = QDateTime.currentDateTime().addSecs(seconds)
+    def set_time(self, seconds):
+        self.remaining = seconds 
+
+    def start(self):
         self.running = True
 
+        self.timer.start(1000)
         self.started.emit()
-        self.timer.start()
 
     def stop(self):
         self.timer.stop()
         self.running = False
-        slelf.stopped.emit()
+        self.stopped.emit()
 
     def update(self):
-        remaining = QDateTime.currentDateTime().secsTo(self.end_time)
+        if self.remaining > 0:
+            self.remaining -= 1
+            self.time_changed.emit(self.remaining)
 
-        if remaining <= 0:
-            remaining = 0
-            self.time_changed.emit(remaining)
-
-            self.stop()
+        if self.remaining == 0:
+            self.timer.stop()
             self.finished.emit()
-            return
-        self.time_changed.emit(remaining)
+
+
 
 

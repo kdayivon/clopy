@@ -10,9 +10,12 @@ class PomodoroPage(QWidget):
         super().__init__()
 
         self.pomo = PomoTimer()
+        self.mode = "pomodoro"
 
-        self.lbl = QLabel("50:00")
+        self.lbl = QLineEdit("50:00")
         self.lbl.setFont(QFont('Arial Rounded MT Bold', 100))
+        self.lbl.setAlignment(Qt.AlignCenter)
+        self.lbl.setFixedWidth(500)
         self.btn = QPushButton("START") 
         self.btn.setFixedSize(180, 60)
         self.btn.setFont(QFont('Arial Rounded MT Bold', 18))
@@ -23,15 +26,17 @@ class PomodoroPage(QWidget):
         layout.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.btn, 0, Qt.AlignCenter)
 
-        self.btn.clicked.connect(self.start_timer)
+        self.btn.clicked.connect(self.toggle_timer)
+        self.lbl.returnPressed.connect(self.set_time)
 
         self.pomo.time_changed.connect(self.update_display)
         self.pomo.finished.connect(self.timer_finished)
 
         self.setStyleSheet("""
-                    QLabel {
+                    QLineEdit {
                         border: none;
                         color: #D4BE98;
+                        background: transparent;
                     }
                     QPushButton {
                         border: none;
@@ -40,9 +45,32 @@ class PomodoroPage(QWidget):
                         border-radius: 5px;
                     }
                 """)
+    def set_time(self):
+        text = self.lbl.text().strip()
+        try:
+            if ":" in text:
+                minutes, seconds = map(int, text.split(":"))
+                total_seconds = minutes * 60 + seconds
+            else:
+                total_seconds = int(text) * 60
+            if total_seconds <= 0:
+                total_seconds = 0
+        except ValueError:
+            self.update_display(self.pomo.remaining)
+            return 
+        self.pomo.set_time(total_seconds)
+        self.update_display(total_seconds)
 
-    def start_timer(self):
-        self.pomo.start(50*60)
+    def toggle_timer(self):
+        if self.pomo.timer.isActive():
+            self.pomo.stop()
+            self.btn.setText("START")
+            self.btn.setFixedHeight(60)
+            self.btn.setStyleSheet("margin-top: 0px;")
+        else: 
+            self.pomo.start()
+            self.btn.setText("PAUSE")
+            self.btn.setStyleSheet("margin-top: 10px;")
 
     def update_display(self, remaining):
         minutes = remaining // 60
@@ -51,5 +79,12 @@ class PomodoroPage(QWidget):
         self.lbl.setText(f"{minutes:02}:{seconds:02}")
 
     def timer_finished(self):
-        self.btn.setText("Done !")
+        if self.mode == "pomodoro":
+            self.mode = "break"
+            self.pomo.set_time(10*60)
+        else:
+            self.mode = "pomodoro"
+            self.pomo.set_time(50*60)
 
+        self.update_display(self.pomo.remaining)
+        self.btn.setText("START")
