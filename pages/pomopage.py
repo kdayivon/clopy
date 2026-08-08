@@ -1,6 +1,7 @@
+from PySide6 import QtGui, QtCore
 from PySide6.QtWidgets import * 
 from PySide6.QtCore import Qt, Signal 
-from PySide6.QtGui import QFont
+from PySide6.QtGui import QFont, QCursor
 from helpers.timedisplay import TimeDisplay
 from helpers.startbutton import StartButton
 from helpers.pomotimer import PomoTimer
@@ -19,12 +20,18 @@ class PomodoroPage(QWidget):
         self.btn = QPushButton("START") 
         self.btn.setFixedSize(180, 60)
         self.btn.setFont(QFont('Arial Rounded MT Bold', 18))
+        self.btn.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+        self.iter = QLabel("#1")
+        self.iter.setFont(QFont('Arial Rounded MT Bold', 12))
+        self.iter.setStyleSheet("margin-top: 20px;")
+        self.counter = 1
 
         layout = QVBoxLayout(self)
 
         layout.addWidget(self.lbl)
         layout.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.btn, 0, Qt.AlignCenter)
+        layout.addWidget(self.iter, 0, Qt.AlignCenter)
 
         self.btn.clicked.connect(self.toggle_timer)
         self.lbl.returnPressed.connect(self.set_time)
@@ -43,6 +50,11 @@ class PomodoroPage(QWidget):
                         color: #32302F;
                         background: #D4BE98; 
                         border-radius: 5px;
+                    }
+                    QLabel {
+                        border: none;
+                        color: #D4BE98;
+                        background: transparent;
                     }
                 """)
     def set_time(self):
@@ -85,6 +97,8 @@ class PomodoroPage(QWidget):
         else:
             self.mode = "pomodoro"
             self.pomo.remaining = self.pomo.pomo_dur
+            self.counter += 1
+            self.iter.setText(f"#{self.counter}")
 
         self.pomo.time_changed.emit(self.pomo.remaining)
         self.update_display(self.pomo.remaining)
