@@ -12,6 +12,7 @@ class PomodoroPage(QWidget):
 
         self.pomo = PomoTimer()
         self.mode = "pomodoro"
+        
 
         self.lbl = QLineEdit("50:00")
         self.lbl.setFont(QFont('Arial Rounded MT Bold', 100))
@@ -21,19 +22,36 @@ class PomodoroPage(QWidget):
         self.btn.setFixedSize(180, 60)
         self.btn.setFont(QFont('Arial Rounded MT Bold', 18))
         self.btn.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+        self.skip = QPushButton("SKIP")
+        self.skip.setFixedSize(40, 40)
+        self.skip.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+        self.skip.setFont(QFont('Arial Rounded MT Bold'))
+        self.skip.hide()
+
         self.iter = QLabel("#1")
         self.iter.setFont(QFont('Arial Rounded MT Bold', 12))
         self.iter.setStyleSheet("margin-top: 20px;")
         self.counter = 1
 
-        layout = QVBoxLayout(self)
+        btn_area = QWidget()
+        btn_area.setFixedWidth(300)
+        
+        btn_layout = QGridLayout(btn_area)
+        btn_layout.setContentsMargins(0, 0, 0, 0)
+        btn_layout.addWidget(self.btn, 0, 1, Qt.AlignCenter)
+        btn_layout.addWidget(self.skip, 0, 2, Qt.AlignRight)
+        btn_layout.setColumnStretch(0, 1)
+        btn_layout.setColumnStretch(2, 1)
 
+        layout = QVBoxLayout(self)
         layout.addWidget(self.lbl)
         layout.setAlignment(Qt.AlignCenter)
-        layout.addWidget(self.btn, 0, Qt.AlignCenter)
+        layout.addWidget(btn_area, 0, Qt.AlignCenter)
         layout.addWidget(self.iter, 0, Qt.AlignCenter)
 
+
         self.btn.clicked.connect(self.toggle_timer)
+        self.skip.clicked.connect(self.skip_timer)
         self.lbl.returnPressed.connect(self.set_time)
 
         self.pomo.time_changed.connect(self.update_display)
@@ -78,11 +96,26 @@ class PomodoroPage(QWidget):
             self.pomo.stop()
             self.btn.setText("START")
             self.btn.setFixedHeight(60)
-            self.btn.setStyleSheet("margin-top: 0px;")
+            self.skip.hide()
         else: 
             self.pomo.start()
             self.btn.setText("PAUSE")
-            self.btn.setStyleSheet("margin-top: 10px;")
+            self.skip.show()
+
+    def skip_timer(self):
+        self.pomo.stop()
+        if self.mode == "pomodoro":
+            self.mode = "break"
+            self.pomo.remaining = self.pomo.break_dur
+        else:
+            self.mode = "pomodoro"
+            self.pomo.remaining = self.pomo.pomo_dur
+            self.counter += 1
+            self.iter.setText(f"#{self.counter}")
+        self.pomo.time_changed.emit(self.pomo.remaining)
+        self.btn.setText("START")
+        self.skip.hide()
+
 
     def update_display(self, remaining):
         minutes = remaining // 60
@@ -101,6 +134,6 @@ class PomodoroPage(QWidget):
             self.iter.setText(f"#{self.counter}")
 
         self.pomo.time_changed.emit(self.pomo.remaining)
-        self.update_display(self.pomo.remaining)
         self.btn.setText("START")
+        self.skip.hide()
 
