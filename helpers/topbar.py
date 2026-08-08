@@ -1,6 +1,7 @@
+from PySide6 import QtGui, QtCore
 from PySide6.QtWidgets import * 
 from PySide6.QtCore import Qt, Signal 
-from PySide6.QtGui import QFont
+from PySide6.QtGui import QFont, QCursor
 
 class TopBar(QWidget):
     page_i = Signal(int)
@@ -21,18 +22,21 @@ class TopBar(QWidget):
         self.pomo_btn.setFixedSize(115, 35)
         self.pomo_btn.setContentsMargins(0, 0, 0, 0)
         self.pomo_btn.setFont(QFont('Arial Rounded MT Bold', 12))
+        self.pomo_btn.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         
         self.timer_btn = QPushButton("Timer")
         self.timer_btn.setCheckable(True)
         self.timer_btn.setFixedSize(120, 35)
         self.timer_btn.setContentsMargins(0, 0, 0, 0)
         self.timer_btn.setFont(QFont('Arial Rounded MT Bold', 12))
+        self.timer_btn.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
 
         self.watch_btn = QPushButton("Stopwatch")
         self.watch_btn.setCheckable(True)
         self.watch_btn.setFixedSize(120, 35)
         self.watch_btn.setContentsMargins(0, 0, 0, 0)
         self.watch_btn.setFont(QFont('Arial Rounded MT Bold', 12))
+        self.watch_btn.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         
         self.group.addButton(self.pomo_btn, 0)
         self.group.addButton(self.timer_btn, 1)

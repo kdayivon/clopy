@@ -3,8 +3,6 @@ from PySide6.QtCore import QDateTime
 
 class PomoTimer(QObject):
     time_changed = Signal(int)
-    started = Signal()
-    stopped = Signal()
     finished = Signal()
     
     def __init__(self, pomo_min=50, break_min=10):
@@ -28,12 +26,10 @@ class PomoTimer(QObject):
         self.running = True
 
         self.timer.start(1000)
-        self.started.emit()
 
     def stop(self):
         self.timer.stop()
         self.running = False
-        self.stopped.emit()
 
     def update(self):
         if self.remaining > 0:

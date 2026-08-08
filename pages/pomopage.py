@@ -95,7 +95,6 @@ class PomodoroPage(QWidget):
         if self.pomo.timer.isActive():
             self.pomo.stop()
             self.btn.setText("START")
-            self.btn.setFixedHeight(60)
             self.skip.hide()
         else: 
             self.pomo.start()
