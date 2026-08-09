@@ -1,16 +1,10 @@
 from PySide6.QtWidgets import * 
 from PySide6.QtCore import Qt, Signal 
 from helpers.topbar import TopBar 
-from helpers.timedisplay import TimeDisplay
-from helpers.startbutton import StartButton 
 from pages.pomopage import PomodoroPage 
 from pages.timerpage import TimerPage 
 from pages.watchpage import StopWatchPage
 
-# fgc = #D4BE98
-# bgc = #32302F
-# bdgc = #252424
-# bg1 = #3C3836
 
 class MainWindow(QMainWindow):
     def __init__(self):

@@ -40,6 +40,10 @@ class PomoTimer(QObject):
             self.timer.stop()
             self.finished.emit()
 
+    def reset(self):
+        self.timer.stop() 
+        self.remaining = self.pomo_dur
+        self.time_changed.emit(self.remaining)
 
 
 

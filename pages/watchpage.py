@@ -22,6 +22,7 @@ class StopWatchPage(QWidget):
         self.reset.setFixedSize(50, 40)
         self.reset.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.reset.setFont(QFont('Arial Rounded MT Bold'))
+        self.reset.setStyleSheet("background: #EA6962;")
         self.reset.hide()
 
         btn_area = QWidget()
